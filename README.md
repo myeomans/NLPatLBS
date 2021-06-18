@@ -1,1 +1,1 @@
-# SICSSworkshop
+# NLP at LBS class
