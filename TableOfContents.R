@@ -4,9 +4,9 @@
 #######################################
 
 # Run only once, when you first download the data
-install.packages("tidyverse","quanteda","politeness",
+install.packages(c("tidyverse","quanteda","politeness",
                  "doc2concrete","glmnet","ggrepel","stm",
-                 "syuzhet","sentimentr","doMC","spacyr")
+                 "syuzhet","sentimentr","doMC","spacyr"))
 
 library(tidyverse) # Contains MANY useful functions
 library(quanteda)  # many useful text analysis tools
