@@ -19,7 +19,7 @@ neg_turns$wordcount=str_count(neg_turns$text,"[[:alpha:]]+")
 # Calculate politeness, add it to the turn-level data
 
 # neg_polite<-politeness(neg_turns$text,parser="spacy") 
-# saveRDS(neg_polite,file="data/neg_polite.RDS")
+saveRDS(neg_polite,file="data/neg_polite.RDS")
 
 # If SpaCy/politeness isn't working, you can load from saved file here
 neg_polite<-readRDS("data/neg_polite.RDS")
@@ -156,4 +156,6 @@ plotData %>%
              x=turnFrac,group=seller,color=seller)) +
   geom_point(position=position_dodge(.2)) +
   geom_errorbar(position=position_dodge(.2),width=.3)+
-  theme_bw()
+  theme_bw()+
+  labs(x="Quarter of conversation",y="Word Count") +
+  theme(legend.position = c(.7,.7))
