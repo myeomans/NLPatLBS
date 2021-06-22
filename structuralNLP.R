@@ -1,5 +1,20 @@
 
 
+rev_small<-readRDS("data/rev_small.RDS")
+
+# Let's shrink the dataset even more so we can hold it all in memory
+# Let's get rid of people with gender-ambiguous names (since we will use that variable later)
+# We're also going to group by business ID and only take the first 10 reveiews for each
+rev_small<-rev_small %>%
+  filter((!is.na(user_male))&(abs(user_male-.5)>.4)) %>%
+  group_by(business_id) %>%
+  mutate(group_count=1:n()) %>%
+  ungroup() %>%
+  filter(group_count<11) %>%
+  select(-group_count)
+
+
+
 ############### Word Vectors
 
 # The real word vector files are ~ 6GB - too big! This is a smaller version,
@@ -78,12 +93,9 @@ politeness::politeness(gtest,parser="spacy",drop_blank=TRUE)
 
 rev_polite<-readRDS("data/rev_polite.RDS")
 
-obviousgender=(!is.na(rev_small$user_male))&(abs(rev_small$user_male-.5)>.4)
-
 # Looks like a big difference in overall word count... 
-politenessPlot(rev_polite %>%
-                 filter(obviousgender),
-               rev_small$user_male[obviousgender],
+politenessPlot(rev_polite,
+               rev_small$user_male,
                middle_out=.05,
                drop_blank = 0,
                split_levels = c("Female","Male"))
@@ -96,15 +108,16 @@ rev_small %>%
 rev_polite_av=as.data.frame(apply(rev_polite,2,function(x) mean(rev_small$word_count)*x/rev_small$word_count))
 
 # Re-plot with averages
-politenessPlot(rev_polite_av %>%
-                 filter(obviousgender),
-               rev_small$user_male[obviousgender],
+politenessPlot(rev_polite_av,
+               rev_small$user_male,
                middle_out=.05,
+               drop_blank = 0,
                split_levels = c("Female","Male")) +
   # Note that politenessPlot can be customized like any normal ggplot with the + sign
   scale_y_continuous(name = "Feature Count per Average-length text",
                      breaks= c(.1,.5,1,2,5,10),
                      trans = "sqrt")
+
 
 ggsave("genderreview.png")
 
