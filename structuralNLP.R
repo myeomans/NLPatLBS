@@ -6,6 +6,7 @@
 # containing only the 50,000 most common words
 vecSmall<-readRDS("data/vecSmall.RDS")
 
+# Word frequency file - to reweight common words
 load("data/wfFile.RData")
 
 # one column with words, and 300 with vector projections (uninterpretable!)
@@ -26,6 +27,8 @@ vecSimCalc(x=c("I am very sad","I am very happy"),
 # Train a vector classifier
 vdat<-vecCheck(rev_small$text,vecSmall,wfFile)
 
+train_split=sample(1:nrow(rev_small),round(nrow(rev_small)/2))
+
 lasso_vec<-glmnet::cv.glmnet(x=vdat[train_split,],
                              y=rev_small$stars[train_split])
 
@@ -38,8 +41,8 @@ test_vec_predict<-predict(lasso_vec,newx = vdat[-train_split,])
 cor.test(rev_small$stars[-train_split],test_vec_predict)
 
 
-
-
+# Clear big files out of the workspace to reduce memory load
+rm(vdat,vecSmall,wfFile)
 
 
 ############### Politeness
@@ -61,7 +64,7 @@ gtest<-c("I understand that's what you mean.",
          "I'm not sorry. But I agree with the New York plan.")
 
 
-# Notice the dependendy relations, part of speech tags, and name entities extracted by SpaCyR
+# Notice the dependency relations, part of speech tags, and name entities extracted by SpaCyR
 spacyr::spacy_parse(gtest,dependency=TRUE,entity = TRUE)
 
 # Note the different politeness features picked up, the negation handling, etc... 

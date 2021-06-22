@@ -18,7 +18,12 @@ neg_turns$wordcount=str_count(neg_turns$text,"[[:alpha:]]+")
 
 # Calculate politeness, add it to the turn-level data
 
-neg_polite<-politeness(neg_turns$text,parser="spacy") 
+# neg_polite<-politeness(neg_turns$text,parser="spacy") 
+# saveRDS(neg_polite,file="data/neg_polite.RDS")
+
+# If SpaCy/politeness isn't working, you can load from saved file here
+neg_polite<-readRDS("data/neg_polite.RDS")
+
 neg_turns_all<-bind_cols(neg_turns,neg_polite)
 
 
