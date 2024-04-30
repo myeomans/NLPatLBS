@@ -1,7 +1,22 @@
+################################################
+#
+#     Text Mining for Economics & Finance
+#
+#   Useful functions for handling word vectors
+#
+#
+################################################
 
 
 vecCheck<-function(text, vecdata, wfdata=NULL, 
                    PCAtrim=0, a=10^-3){
+  # text=c(c("I am very sad","I am very happy"),
+  #        "I am thrilled")
+  # vecdata=vecSmall
+  # wfdata=NULL
+  # PCAtrim=0
+  # a=10^-3
+  
   if(class(vecdata)[1]!="data.table"){
     stop("Load vector data as data.table")
   }
@@ -12,13 +27,13 @@ vecCheck<-function(text, vecdata, wfdata=NULL,
   text[.allCaps]<-tolower(text[.allCaps])
   
   dtm1<-quanteda::dfm(quanteda::tokens(text),tolower=F)
-  dtm1<-dtm1[,colnames(dtm1)%in%vecdata[,word]]
+  dtm1<-dtm1[,colnames(dtm1)%in%vecdata$word]
   dtm1<-dtm1[,order(colnames(dtm1))]
   
   if(is.null(wfdata)){
-    dtm1<-dtm1[,(colnames(dtm1)%in%vecdata[,word])]
+    dtm1<-dtm1[,(colnames(dtm1)%in%vecdata$word)]
   } else{
-    dtm1<-dtm1[,(colnames(dtm1)%in%vecdata[,word])&(colnames(dtm1)%in%wfdata$Word)]
+    dtm1<-dtm1[,(colnames(dtm1)%in%vecdata$word)&(colnames(dtm1)%in%wfdata$Word)]
     weights<-(a/(a+wfdata$FREQavg[(wfdata$Word%in%colnames(dtm1))]))
   }
   vecd1<-vecdata[vecdata$word%in%colnames(dtm1),]
@@ -67,36 +82,33 @@ vecSimCalc<-function(x=NULL,xvec=NULL,
                      y,
                      vecfile, wffile=NULL,
                      PCAtrim=0){
+  
   if(length(y)>1){
     stop("One ground truth at a time!")
   }
   if(is.null(x)&is.null(xvec)){
     stop("Must include text or vectorized text as X")
   }
-  if(!is.null(x)){
-    xvec=vecCheck(x,vecfile, wffile,PCAtrim=PCAtrim)
+  if(is.null(x)){
+    yvec=vecCheck(y,vecfile, wffile)
+  } else {
+    xyvec<-vecCheck(c(x,y),
+                    vecfile, 
+                    wffile,
+                    PCAtrim=PCAtrim)
+    if(length(x)==1){
+      xvec<-matrix(xyvec[1:length(x),],nrow = 1)
+    } else{
+      xvec<-xyvec[1:length(x),]
+    }
+    yvec<-xyvec[nrow(xyvec),]
   } 
-  yvec=vecCheck(y,vecfile, wffile)
+  
   mags=apply(xvec,1,function(z) sqrt(sum(z^2)))*sqrt(sum(yvec^2))
   dots=t(apply(xvec,1, function(z) sum(z*yvec)))
   sims=as.vector(dots/mags)
   return(sims)
 }
-
-# 
-# vecSimCalcTwo<-function(x,y,
-#                      vecfile, wffile){
-#   if(length(y)>1){
-#     stop("One ground truth at a time!")
-#   }
-#   vecs=vecCheck(c(x,y),vecfile, wffile)
-#   xvec=vecs[1:length(x),]
-#   yvec=vecs[nrow(vecs),]
-#   mags=apply(xvec,1,function(z) sqrt(sum(z^2)))*sqrt(sum(yvec^2))
-#   dots=t(apply(xvec,1, function(z) sum(z*yvec)))
-#   sims=as.vector(dots/mags)
-#   return(sims)
-# }
 
 
 bowSimCalc<-function(x,y){
