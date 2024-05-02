@@ -2,7 +2,7 @@
 #                                                   #       
 #  Text Analysis for Social Scientists and Leaders  #
 #                                                   #
-#                  Assignment 3                     #
+#                  Assignment 2                     #
 #                                                   #
 #                                                   #
 #####################################################

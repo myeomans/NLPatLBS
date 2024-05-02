@@ -851,7 +851,7 @@ review_dat_dfm_test<-review_dat_dfm_test[rowSums(review_dat_dfm_test)!=0,]
 
 
 # Train a 20-topic model
-rev_topicMod20<-stm(review_dat_dfm_train,K=20)
+rev_topicMod20<-stm(review_dat_dfm_train,K=20,init.type = "Spectral")
 
 # There are metrics you can use to choose the topic number.
 # These are controversial... you are better off adjusting to taste
