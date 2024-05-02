@@ -20,25 +20,21 @@ library(sentimentr) # a benchmark for sentiment detection
 library(doMC) # to speed up some code with parallel processing
 library(spacyr) # to parse grammar
 
+# Functions for use in the class
+source("kendall_acc.R")    
+source("vectorFunctions.R")    
+source("TASSL_dfm.R")
 
-########################################################
-# Data wrangling.... ignore for now
-########################################################
-# source("dataload.R") # to trim yelp data from raw JSON files... don't run, it's slow! (but if you're curious.... )
-# source("datashrink.R") # This shrinks the big dataset to something more manageable.
+# These are introductions to basic tidyverse - plotting and string handling
+# If you are new to tidyverse, please take a few minutes to go through these!!
+source("text_basics.R")    
+source("ggplot_tips.R")   
 
-########################################################
+# Class 1!  ngrams, model training, categories
+source("NLP_LBS1.R")    
+source("NLP_LBS1_answers.R")    
 
-# Let's load the small data from memory
-rev_small<-readRDS("data/rev_small.RDS")
-bus_small<-readRDS("data/bus_small.RDS")
+# Class 2!  dictionaries, embeddings, sentence structure
+source("NLP_LBS2.R")    
+source("NLP_LBS2_answers.R")    
 
-# Class 1!   # ngrams, model training, dictionaries
-
-source("basicNLP.R")    
-
-
-
-# source("structuralNLP.R") #  vectors, politeness, accommodation
-# 
-# source("receptiveness.R") # receptiveness example
