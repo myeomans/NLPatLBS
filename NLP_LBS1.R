@@ -203,7 +203,7 @@ ngramTokens(dox)
 ######### New data - restaurant reviews
 
 # Review data
-review_dat<-readRDS("review_dat.RDS") %>%
+review_dat<-readRDS("data/review_dat.RDS") %>%
   filter(str_count(text,"[[:alpha:]]+")>25)
 
 names(review_dat)
@@ -444,7 +444,7 @@ plotDat %>%
 #################################################
 
 # new data! let's explore
-glassdoor<-readRDS("glassdoorReviews.RDS")
+glassdoor<-readRDS("data/glassdoorReviews.RDS")
 
 
 # Only a few companies in this data
@@ -867,7 +867,7 @@ rev_topicMod20<-stm(review_dat_dfm_train,K=20)
 
 # Note - you can save topic models as RDS files, too!
 
-saveRDS(rev_topicMod20,file="rev_topicMod20.RDS")
+saveRDS(rev_topicMod20,file="data/rev_topicMod20.RDS")
 
 
 rev_topicMod20<-readRDS("data/rev_topicMod20.RDS")

@@ -7,7 +7,7 @@ library(ggridges)
 ##############################################
 
 # Load the data, calculate word counts
-surveys<-readRDS("surveyDat.RDS") %>%
+surveys<-readRDS("data/surveyDat.RDS") %>%
   mutate(why_join_wdct=str_count(why_join,"[[:alpha:]]+"),
          future_plans_wdct=str_count(future_plans,"[[:alpha:]]+"),
          group_project_wdct=str_count(group_project,"[[:alpha:]]+")
@@ -217,7 +217,7 @@ ggsave("topic_knowledge.png")
 
 #################################################################
 
-reviews<-readRDS("rev_med.RDS") %>%
+reviews<-readRDS("data/rev_med.RDS") %>%
   mutate(wordcount=str_count(text,"[[:alpha:]]+"))
 
 # let's plot the effect of word count on star rating
