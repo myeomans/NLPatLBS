@@ -9,6 +9,7 @@ install.packages(c("tidyverse","quanteda","politeness",
                  "syuzhet","sentimentr","doMC","spacyr"))
 
 library(tidyverse) # Contains MANY useful functions
+library(textclean) # contraction handler
 library(quanteda)  # many useful text analysis tools
 library(politeness) # structural features from text
 library(doc2concrete) # Contains the ngramTokens function - mostly a wrapper around quanteda tools
