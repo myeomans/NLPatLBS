@@ -2,7 +2,7 @@
 #                                                   #       
 #  Text Analysis for Social Scientists and Leaders  #
 #                                                   #
-#              Assignment 4 Answers                 #
+#              Assignment 2 Answers                 #
 #                                                   #
 #                                                   #
 #####################################################
@@ -125,55 +125,8 @@ acc_combo<-kendall_acc(test_combo_predict,ec_test$EPS_actual)
 acc_ngram<-kendall_acc(ec_test$EPS_actual,test_ngram_predict)
 
 
-########################################
-# Q4
-########################################
-
-# Other benchmarks
-
-ec_test <- ec_test %>%
-  mutate(speech_sent=syuzhet::get_sentiment(opening_speech),
-         speech_wdct=str_count(opening_speech,"[[:alpha:]]+"))
-
-
-acc_wdct<-kendall_acc(ec_test$EPS_actual,ec_test$speech_wdct)
-
-acc_sent<-kendall_acc(ec_test$EPS_actual,ec_test$speech_sent)
-
-acc_wdct
-acc_sent
-
-
-bind_rows(acc_ngram %>%
-            mutate(model="Ngrams"),
-          acc_vec%>%
-            mutate(model="word2vec"),
-          acc_combo%>%
-            mutate(model="Ngrams + word2vec"),
-          acc_wdct %>%
-            mutate(model="Word Count"),
-          acc_sent %>%
-            mutate(model="Traditional Sentiment")
-) %>% 
-  ggplot(aes(x=model,color=model,
-             y=acc,ymin=lower,ymax=upper)) +
-  geom_hline(yintercept=50) +              
-  geom_point() +                           
-  geom_errorbar(width=.4) +                
-  labs(x="Model",                 
-       y="Accuracy") +  
-  coord_flip() + 
-  theme_bw() +                             
-  theme(axis.text=element_text(size=20),
-        axis.title=element_text(size=24),
-        panel.grid = element_blank(),
-        strip.text=element_text(size=24),
-        strip.background = element_rect(fill="white"),
-        legend.position = "none")          # other design options
-
-
 ###################################################
-# Q5 
+# Q4 
 ###################################################
 
 ec_test <- ec_test %>%
@@ -204,7 +157,7 @@ ec_test %>%
   pull(opening_speech)
 
 ###################################################
-# Q6 
+# Q5
 ###################################################
 
 positive_dict<-textdata::lexicon_loughran() %>%
@@ -263,7 +216,7 @@ bind_rows(acc_posbow %>%
         legend.position = "none")          # other design options
 
 ####################################
-# Q7
+# Q6
 ####################################
 
 all8<-ecMain %>%
@@ -339,7 +292,7 @@ all8Set %>%
 
 
 ################################################
-# Q 8
+# Q 7
 ################################################
 
 ecQA %>%
@@ -360,7 +313,7 @@ ecQA %>%
 
 
 ################################################
-# Q 9
+# Q 8
 ################################################
 
 # Join turn-level data (from the first ten questions) to the call-level data
@@ -477,7 +430,7 @@ plotDat %>%
         axis.text=element_text(size=16))
 
 ################################################
-# Q 10
+# Q 9
 ################################################
 
 ec_train_polite_q<-politeness(ec_train_merged$questiontext,parser="spacy")
@@ -534,7 +487,7 @@ plotDat %>%
 
 
 ################################################
-# Question 11
+# Question 10
 ################################################
 
 # Join call-level data to the turn-level data, focus on answers
@@ -578,53 +531,3 @@ plotDat %>%
   theme(legend.position = "none",
         axis.title=element_text(size=20),
         axis.text=element_text(size=16))
-
-################################################
-# Q 12
-################################################
-
-# multinomial
-
-allquartermodel<-cv.glmnet(x=ecQA_dfmx_train %>%
-                          as.matrix(),
-                        y=ecQA_train_merged$quarter,
-                        family="multinomial")
-
-
-
-# Join call-level data to the turn-level data, focus on answers
-ecQA_test_merged<-ecQA_test %>%
-  left_join(ec_test %>%
-              select(callID,FY,FQ,EPS_actual,EPS_consens)) %>%
-  mutate(first_quarter=1*(FQ==1),
-         quarter=as.character(FQ)) %>%
-  filter(asker==0 & question<=5)
-
-
-ecQA_dfmx_test<-TASSL_dfm(ecQA_test_merged$text,
-                        ngrams=1:2,min.prop=0)  %>%
-  dfm_match(colnames(ecQA_dfmx_train))
-
-
-test_q1_predict<-predict(quarter1model,
-                            newx = ecQA_dfmx_test,
-                            s="lambda.min")
-
-
-test_qall_predict<-predict(allquartermodel,
-                         newx = ecQA_dfmx_test,
-                         type="response",
-                         s="lambda.min")
-
-
-#### Evaluate Accuracy
-
-acc_q1<-kendall_acc(test_q1_predict,
-                    ecQA_test_merged$first_quarter)
-
-
-acc_qall<-kendall_acc(test_qall_predict[,1,1],
-                    ecQA_test_merged$first_quarter)
-
-acc_q1
-acc_qall
