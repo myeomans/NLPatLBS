@@ -209,7 +209,7 @@ review_dat<-readRDS("data/reviews.RDS")
 businesses<-readRDS("data/businessset.RDS")
 # First thing - check variables
 
-names(reviews)
+names(review_dat)
 
 names(businesses)
 
