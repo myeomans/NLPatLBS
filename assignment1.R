@@ -351,6 +351,8 @@ hist(test_predict_binary)
 
 round(100*mean(test_predict_binary==testY),3)
 
+mean(round(test_predict)==testY)
+
 # We can also do accuracy using probability of superiority, aka Kendall's Tau
 
 kendall_acc(test_predict,testY)
