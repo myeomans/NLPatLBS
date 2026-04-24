@@ -15,8 +15,8 @@ library(tidyverse)
 library(glmnet)
 library(sentimentr)
 
+source("TAB_dfm.R")         # putting the dfm function in a separate script
 source("vectorFunctions.R") # a new one!
-source("TAB_dfm.R")
 source("kendall_acc.R")
 
 ############### Word Vectors
