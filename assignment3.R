@@ -217,7 +217,6 @@ rev_tiny <- reviews %>%
   slice(1:500)
 
 
-
 rev_tiny_sp<-spacy_parse(rev_tiny$text,
                          nounphrase = T,
                          lemma = T,
